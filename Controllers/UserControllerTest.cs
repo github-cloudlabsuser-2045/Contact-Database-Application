@@ -17,6 +17,7 @@ namespace CRUD_application_2.Tests.Controllers
         public void Setup()
         {
             controller = new UserController();
+            UserController.userlist.Clear();
             testUser = new User { Id = 1, Name = "Test User", Email = "testuser@example.com" };
             UserController.userlist.Add(testUser);
         }
@@ -93,5 +94,20 @@ namespace CRUD_application_2.Tests.Controllers
             Assert.AreEqual("Index", result.RouteValues["action"]);
             Assert.IsFalse(UserController.userlist.Contains(testUser));
         }
+
+        [TestMethod]
+        public void Search()
+        {
+            var user2 = new User { Id = 2, Name = "Another User", Email = "anotheruser@example.com" };
+            UserController.userlist.Add(user2);
+
+            var result = controller.Search("Another") as ViewResult;
+            Assert.IsNotNull(result);
+            var model = result.Model as System.Collections.Generic.List<User>;
+            Assert.AreEqual(1, model.Count);
+            Assert.AreEqual(user2, model[0]);
+        }
+
+
     }
 }
